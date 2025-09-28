@@ -1,0 +1,7 @@
+<div class="importer" (drop)="onDrop($event)" (dragover)="onDragOver($event)">
+  <p>Glissez & déposez vos fichiers (.tpuml, .starttpuml, .zip) ici</p>
+  <label class="btn">
+    Choisir des fichiers
+    <input type="file" multiple (change)="onFileChange($event)" accept=".tpuml,.starttpuml,.zip" hidden>
+  </label>
+</div>

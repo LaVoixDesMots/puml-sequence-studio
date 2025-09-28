@@ -1,0 +1,7 @@
+<ul class="file-list">
+  <li *ngFor="let p of files; trackBy: trackByPath"
+      (click)="pick.emit(p)"
+      [class.active]="p===selected">
+    {{ p }}
+  </li>
+</ul>

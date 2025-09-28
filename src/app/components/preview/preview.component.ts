@@ -1,88 +1,78 @@
+import { Component, OnDestroy, effect, signal, computed, inject, EffectRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Component, DestroyRef, effect, input, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { WorkspaceService } from '../../services/workspace.service';
+import { RendererService } from '../../services/renderer.service';
 
 @Component({
   selector: 'app-preview',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './preview.component.html',
-  styleUrls: ['./preview.component.css'],
+  styleUrls: ['./preview.component.css']
 })
-export class PreviewComponent {
-  /** Chemin (relatif à /export) vers le SVG à afficher, ex: /export/svg/mon-diagramme.svg */
-  svgPath = input<string | null>(null);
+export class PreviewComponent implements OnDestroy {
+  private ws = inject(WorkspaceService);
+  private renderer = inject(RendererService);
+  private sanitizer = inject(DomSanitizer);
 
-  /** Titre affiché au-dessus du rendu */
-  title = input<string>('Preview');
+  // UI state
+  loading = signal(false);
+  error = signal<string | null>(null);
+  safeSvg = signal<SafeHtml | null>(null);
+  generatedPuml = signal<string>('');   // pour debug
+  diagMissing = signal<string[]>([]);   // includes manquants
 
-  // état d’affichage
-  safeHtml   = signal<SafeHtml | null>(null);
-  downloadUrl = signal<string | null>(null);
-  error      = signal<string | null>(null);
-  loading    = signal<boolean>(false);
+  title = computed(() => this.ws.selected() ?? 'Aucun fichier');
 
-  private currentBlobUrl: string | null = null;
-  private requestId = 0;
+  private stopEffect?: (EffectRef) | undefined;
 
-  constructor(
-    private http: HttpClient,
-    private sanitizer: DomSanitizer,
-    private destroyRef: DestroyRef
-  ) {
-    // nettoyage du blobUrl quand le composant est détruit
-    this.destroyRef.onDestroy(() => this.revokeBlob());
-
-    // Réagit aux changements de svgPath()
-    effect(() => {
-      const path = this.svgPath();
-
-      // reset immédiat pour éviter d’afficher l’ancien SVG en cas d’erreur
-      this.revokeBlob();
-      this.safeHtml.set(null);
-      this.downloadUrl.set(null);
+  constructor() {
+    effect(async () => {
+      const sel = this.ws.selected();
+      // reset UI state
+      this.loading.set(false);
       this.error.set(null);
-      if (!path) return;
+      this.safeSvg.set(null);
+      this.generatedPuml.set('');
+      this.diagMissing.set([]);
 
-      const rid = ++this.requestId;
+      if (!sel || !sel.endsWith('.starttpuml')) return;
+
       this.loading.set(true);
+      try {
+        // 1) diagnostic includes
+        const diag = await this.ws.diagnoseStarter(sel);
+        this.diagMissing.set(diag.missingIncludes);
+        this.generatedPuml.set(diag.puml);  // on montre ce qui part au renderer
 
-      this.http
-        .get(path, { responseType: 'text' })
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe({
-          next: (svgText) => {
-            // Si une nouvelle requête a démarré, on ignore le résultat précédent
-            if (this.requestId !== rid) return;
+        if (diag.missingIncludes.length) {
+          throw new Error(
+            `Include(s) introuvable(s):\n- ${diag.missingIncludes.join('\n- ')}`
+          );
+        }
 
-            // Rendu inline (évite frame-src/object-src de ta CSP)
-            this.safeHtml.set(this.sanitizer.bypassSecurityTrustHtml(svgText));
+        // 2) rendu
+        const svg = await this.renderer.renderPlantUmlToSvg(diag.puml);
+        if (!svg || !svg.trim()) {
+          throw new Error('Le renderer a retourné un SVG vide.');
+        }
+        // garde-fou : PlantUML renvoie parfois un message texte au lieu de SVG
+        if (!/^<svg[\s\S]*<\/svg>\s*$/i.test(svg.trim())) {
+          throw new Error('Sortie inattendue (pas un SVG). Voir console & “PUML généré”.');
+        }
 
-            // URL blob uniquement pour le bouton "Télécharger"
-            const blob = new Blob([svgText], { type: 'image/svg+xml' });
-            const url = URL.createObjectURL(blob);
-            this.currentBlobUrl = url;
-            this.downloadUrl.set(url);
-
-            this.loading.set(false);
-          },
-          error: () => {
-            if (this.requestId !== rid) return;
-            this.safeHtml.set(null);
-            this.downloadUrl.set(null);
-            this.error.set('SVG introuvable ou inaccessible.');
-            this.loading.set(false);
-          },
-        });
+        this.safeSvg.set(this.sanitizer.bypassSecurityTrustHtml(svg));
+      } catch (e: any) {
+        console.error('[Preview error]', e);
+        this.error.set(e?.message ?? String(e));
+        this.safeSvg.set(null);
+      } finally {
+        this.loading.set(false);
+      }
     }, { allowSignalWrites: true });
   }
 
-  private revokeBlob() {
-    if (this.currentBlobUrl) {
-      URL.revokeObjectURL(this.currentBlobUrl);
-      this.currentBlobUrl = null;
-    }
+  ngOnDestroy(): void {
   }
 }

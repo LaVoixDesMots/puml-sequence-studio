@@ -1,21 +1,22 @@
-<div class="row" style="padding:12px">
-  <div class="col" style="max-width:320px">
-    <project-picker></project-picker>
-
-    <div class="card" style="margin-top:12px">
-      <h3>Diagrams</h3>
-      <ul>
-        <li *ngFor="let it of (items$ | async)" (click)="select(it)" style="cursor:pointer">
-          {{ it.title }}
-        </li>
-      </ul>
-      <!-- bundle ZIP (généré par le pipeline) -->
-      <a class="btn" href="assets/projects/exemple/export/tpuml_bundle.zip" download>📦 Télécharger tout (projet courant)</a>
-    </div>
+<header style="display:flex; align-items:center; gap:12px; padding:8px">
+  <h1 style="margin:0">PUML Sequence Studio</h1>
+  <div style="margin-left:auto; display:flex; gap:8px">
+    <button class="btn" (click)="exportAll()">📦 Exporter tout</button>
   </div>
+</header>
 
-  <div class="col">
-    <app-preview [svgPath]="currentSvgUrl" [title]="current?.title || 'Preview'"></app-preview>
+<div class="grid">
+  <section>
+    <app-importer (files)="onImport($event)"></app-importer>
+    <h3 style="margin-top:12px">Fichiers</h3>
+    <app-file-tree
+      [files]="ws.listPaths()"
+      [selected]="ws.selected()"
+      (pick)="pick($event)">
+    </app-file-tree>
+  </section>
 
-  </div>
+  <section>
+    <app-preview></app-preview>
+  </section>
 </div>

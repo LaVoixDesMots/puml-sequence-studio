@@ -1,0 +1,8 @@
+include ../styles/sequence.base.tpuml
+include ../library/actors.tpuml
+include ../library/lifelines.tpuml
+
+title Démo
+
+A_UI -> S_API : GET /home
+S_API --> A_UI : 200 OK
