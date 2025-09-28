@@ -23,6 +23,7 @@
     "@angular/forms": "^18.2.0",
     "@angular/platform-browser": "^18.2.0",
     "@angular/platform-browser-dynamic": "^18.2.0",
+    "jszip": "^3.10.1",
     "rxjs": "^7.8.1",
     "tslib": "^2.6.2",
     "zone.js": "^0.14.10"
@@ -32,6 +33,10 @@
     "@angular/cli": "^18.2.0",
     "@angular/compiler-cli": "^18.2.0",
     "@types/jasmine": "^5.1.4",
+    "archiver": "^6.0.2",
+    "chokidar": "^3.6.0",
+    "fast-glob": "^3.3.2",
+    "fs-extra": "^11.2.0",
     "jasmine-core": "^5.1.2",
     "karma": "^6.4.3",
     "karma-chrome-launcher": "^3.2.0",
@@ -39,10 +44,6 @@
     "karma-jasmine": "^5.1.0",
     "karma-jasmine-html-reporter": "^2.1.0",
     "typescript": "~5.5.4",
-    "archiver": "^6.0.2",
-    "fast-glob": "^3.3.2",
-    "fs-extra": "^11.2.0",
-    "yargs": "^17.7.2",
-    "chokidar": "^3.6.0"
+    "yargs": "^17.7.2"
   }
 }

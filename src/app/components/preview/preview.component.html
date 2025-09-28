@@ -1,25 +1,35 @@
-<div class="card preview-card">
-  <h3 class="preview-title">{{ title() }}</h3>
+<div class="card">
+  <div class="header">
+    <h3 class="title">{{ title() }}</h3>
+    <div class="status" *ngIf="loading()">Rendu en cours…</div>
+  </div>
 
-  <ng-container *ngIf="safeHtml(); else hint">
-    <div class="svg-container" [innerHTML]="safeHtml()"></div>
-
-    <div class="actions">
-      <a class="btn" *ngIf="downloadUrl()" [href]="downloadUrl()" download>
-        ⬇️ Télécharger ce SVG
-      </a>
-    </div>
+  <ng-container *ngIf="!loading() && !error() && safeSvg(); else fallback">
+    <div class="svg-host" [innerHTML]="safeSvg()"></div>
   </ng-container>
 
-  <ng-template #hint>
-    <p class="small" *ngIf="!loading(); else loadingTpl">
-      Choisissez un diagramme pour l’aperçu.
-    </p>
+  <ng-template #fallback>
+    <div class="info">
+      <p *ngIf="!loading() && !error() && !safeSvg()" class="muted">
+        Sélectionnez un fichier <code>.starttpuml</code> pour prévisualiser.
+      </p>
+
+      <div *ngIf="error()" class="error">
+        <div><strong>Impossible d’afficher le diagramme</strong></div>
+        <pre class="pre">{{ error() }}</pre>
+      </div>
+
+      <div *ngIf="diagMissing().length" class="warning">
+        <div><strong>Includes manquants</strong></div>
+        <ul class="ul">
+          <li *ngFor="let m of diagMissing()">{{ m }}</li>
+        </ul>
+      </div>
+    </div>
   </ng-template>
 
-  <ng-template #loadingTpl>
-    <p class="small">Chargement…</p>
-  </ng-template>
-
-  <p class="small error" *ngIf="error()">{{ error() }}</p>
+  <details style="margin-top:8px">
+    <summary>Voir le PUML généré (debug)</summary>
+    <pre class="pre">{{ generatedPuml() }}</pre>
+  </details>
 </div>

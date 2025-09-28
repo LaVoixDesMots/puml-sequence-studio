@@ -1,40 +1,36 @@
-// src/app/app.component.ts
-import { Component, DestroyRef } from '@angular/core';
+import { Component, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ImporterComponent } from './components/importer/importer.component';
+import { FileTreeComponent } from './components/file-tree/file-tree.component';
 import { PreviewComponent } from './components/preview/preview.component';
-import { ProjectPickerComponent } from './components/project-picker/project-picker.component';
-import { TpumlManifestService, GeneratedItem } from './services/tpuml-manifest.service';
-import { Observable, Subject } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { WorkspaceService } from './services/workspace.service';
+import { RendererService } from './services/renderer.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, PreviewComponent, ProjectPickerComponent],
+  imports: [CommonModule, ImporterComponent, FileTreeComponent, PreviewComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title: string = "puml-sequence-studio"
-  items$: Subject<GeneratedItem[]> = new Subject();
-  current?: GeneratedItem;
+  ws = inject(WorkspaceService);
+  renderer = inject(RendererService);
 
-  constructor(private manifest: TpumlManifestService, private destroyRef: DestroyRef) {
-    this.manifest.items$
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(items => {
-        this.current = undefined;
-        this.items$.next(items);
-      });
-
-
-    // // ⬅️ reset selection when project changes
-    // this.manifest.currentProject$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
-    //   this.current = undefined;
-    // });
+  async onImport(files: FileList) {
+    for (const f of Array.from(files)) {
+      await this.ws.importAny(f);
+    }
   }
-  
-  select(it: GeneratedItem) { this.current = it; }
 
-  get currentSvgUrl() { return this.current?.svg ?? null; } // null if none
+  pick(p: string) { this.ws.select(p); }
+
+  async exportAll() {
+    const blob = await this.ws.exportZip((puml) => this.renderer.renderPlantUmlToSvg(puml));
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `${this.ws.projectName()}_bundle.zip`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
 }

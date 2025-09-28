@@ -1,0 +1,3 @@
+' tokens
+!define COLOR.BG #ffffff
+!define COLOR.TEXT #111111

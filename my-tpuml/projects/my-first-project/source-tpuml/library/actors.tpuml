@@ -1,0 +1,2 @@
+type Actor A_UI "User"
+type Service S_API "API" <<service>>
