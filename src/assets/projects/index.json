@@ -1,0 +1,16 @@
+{
+  "projects": [
+    {
+      "id": "exemple",
+      "name": "Exemple",
+      "baseDir": "assets/projects/exemple",
+      "description": "Projet démo T-PUML"
+    },
+    {
+      "id": "nouveau-projet",
+      "name": "Nouveau Projet",
+      "baseDir": "assets/projects/nouveau-projet",
+      "description": ""
+    }
+  ]
+}

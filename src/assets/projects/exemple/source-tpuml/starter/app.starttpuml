@@ -1,0 +1,16 @@
+include /styles/tokens.tpuml
+include /styles/theme.light.tpuml
+include /styles/sequence.base.tpuml
+include /library/actors.tpuml
+include /library/lifelines.tpuml
+include /library/macros.sequence.tpuml
+
+title Exemple Projet — Home flow
+SetupDefault()
+
+include /fragments/common/check_session.tpuml
+alt Déjà connecté ?
+  include /fragments/ui/show_home.tpuml
+else Non
+  include /fragments/ui/prompt_login.tpuml
+end

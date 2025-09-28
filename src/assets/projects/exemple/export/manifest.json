@@ -1,0 +1,8 @@
+[
+  {
+    "starter": "starter/app.starttpuml",
+    "puml": "starter/app.puml",
+    "svg": "svg/app.svg",
+    "title": "app"
+  }
+]

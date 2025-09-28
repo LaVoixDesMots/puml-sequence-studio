@@ -1,0 +1,11 @@
+{
+  "project": "exemple",
+  "items": [
+    {
+      "title": "Home flow",
+      "svg": "svg/app.svg",
+      "puml": "gen-puml/app.puml",
+      "tpuml": "source-tpuml/starter/app.starttpuml"
+    }
+  ]
+}

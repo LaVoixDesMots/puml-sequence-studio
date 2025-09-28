@@ -1,0 +1,6 @@
+!define COLOR.BG #FFFFFF
+!define COLOR.TEXT #1B1B1B
+!define COLOR.ACCENT #2563EB
+!define FONT.MAIN Inter
+!define RADIUS 6
+!define SPACING 4

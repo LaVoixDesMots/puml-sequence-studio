@@ -1,0 +1,37 @@
+@startuml
+!define COLOR.BG #FFFFFF
+!define COLOR.TEXT #1B1B1B
+!define COLOR.ACCENT #2563EB
+!define FONT.MAIN Inter
+!define RADIUS 6
+!define SPACING 4
+skinparam backgroundColor COLOR.BG
+skinparam defaultFontName FONT.MAIN
+skinparam Shadowing false
+skinparam SequenceMessageAlign center
+skinparam SequenceParticipantPadding 8
+skinparam ParticipantBorderColor #9CA3AF
+skinparam ParticipantBackgroundColor #F3F4F6
+
+actor "User" as A_UI
+
+
+participant "API" as S_API <<service>>
+database "Main DB" as DB_MAIN
+
+!unquoted procedure SetupDefault()
+!endprocedure
+A_UI -> S_API : checkSession()
+S_API -> DB_MAIN : SELECT user by token
+DB_MAIN --> S_API : row
+S_API --> A_UI : ok?
+A_UI -> A_UI : renderHome()
+A_UI -> A_UI : promptLogin()
+
+title Exemple Projet — Home flow
+SetupDefault()
+
+alt Déjà connecté ?
+else Non
+end
+@enduml

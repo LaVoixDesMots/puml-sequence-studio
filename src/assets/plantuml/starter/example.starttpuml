@@ -1,0 +1,16 @@
+include /src/assets/plantuml/styles/tokens.tpuml
+include /src/assets/plantuml/styles/theme.light.tpuml
+include /src/assets/plantuml/styles/sequence.base.tpuml
+include /src/assets/plantuml/library/actors.tpuml
+include /src/assets/plantuml/library/lifelines.tpuml
+include /src/assets/plantuml/library/macros.sequence.tpuml
+
+title Exemple — Preview
+SetupDefault()
+
+include /src/assets/plantuml/fragments/common/check_session.tpuml
+alt Déjà connecté ?
+  include /src/assets/plantuml/fragments/ui/show_home.tpuml
+else Non
+  include /src/assets/plantuml/fragments/ui/prompt_login.tpuml
+end

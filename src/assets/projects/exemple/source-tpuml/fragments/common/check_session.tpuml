@@ -1,0 +1,4 @@
+A_UI -> S_API : checkSession()
+S_API -> DB_MAIN : SELECT user by token
+DB_MAIN --> S_API : row
+S_API --> A_UI : ok?

@@ -1,0 +1,5 @@
+skinparam backgroundColor #0B0B0B
+skinparam DefaultTextAlignment left
+skinparam defaultFontName FONT.MAIN
+skinparam Shadowing false
+skinparam monochrome true

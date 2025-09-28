@@ -1,0 +1,25 @@
+<div class="card preview-card">
+  <h3 class="preview-title">{{ title() }}</h3>
+
+  <ng-container *ngIf="safeHtml(); else hint">
+    <div class="svg-container" [innerHTML]="safeHtml()"></div>
+
+    <div class="actions">
+      <a class="btn" *ngIf="downloadUrl()" [href]="downloadUrl()" download>
+        ⬇️ Télécharger ce SVG
+      </a>
+    </div>
+  </ng-container>
+
+  <ng-template #hint>
+    <p class="small" *ngIf="!loading(); else loadingTpl">
+      Choisissez un diagramme pour l’aperçu.
+    </p>
+  </ng-template>
+
+  <ng-template #loadingTpl>
+    <p class="small">Chargement…</p>
+  </ng-template>
+
+  <p class="small error" *ngIf="error()">{{ error() }}</p>
+</div>

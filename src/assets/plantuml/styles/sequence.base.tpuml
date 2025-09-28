@@ -1,0 +1,4 @@
+skinparam SequenceMessageAlign center
+skinparam SequenceParticipantPadding 8
+skinparam ParticipantBorderColor #9CA3AF
+skinparam ParticipantBackgroundColor #F3F4F6

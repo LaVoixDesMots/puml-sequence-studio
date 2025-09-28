@@ -1,0 +1,7 @@
+<div class="card">
+    <label class="small">Projet</label>
+    <select [ngModel]="selectedId()" (ngModelChange)="onChange($event)">
+      <option *ngFor="let p of projects()" [ngValue]="p.id">{{ p.name }}</option>
+    </select>
+    <div class="small" *ngIf="desc()">{{ desc() }}</div>
+  </div>

@@ -1,0 +1,3 @@
+skinparam backgroundColor COLOR.BG
+skinparam defaultFontName FONT.MAIN
+skinparam Shadowing false
