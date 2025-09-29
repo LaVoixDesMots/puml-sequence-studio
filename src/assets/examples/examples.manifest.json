@@ -1,0 +1,31 @@
+{
+  "examples": [
+    {
+      "id": "exemple",
+      "title": "Exemple — Séquence de base",
+      "description": "Projet de démonstration avec quelques fragments et un starter.",
+      "thumbnail": "assets/projects/exemple/export/svg/app.svg",
+      "sourceBase": "assets/projects/exemple/source-tpuml",
+      "exportBase": "assets/projects/exemple/export",
+      "starterFiles": [
+        "starter/app.starttpuml"
+      ],
+      "sourceFiles": [
+        "styles/tokens.tpuml",
+        "styles/theme.light.tpuml",
+        "styles/theme.dark.tpuml",
+        "styles/sequence.base.tpuml",
+        "library/actors.tpuml",
+        "library/lifelines.tpuml",
+        "library/macros.sequence.tpuml",
+        "fragments/common/check_session.tpuml",
+        "fragments/ui/show_home.tpuml",
+        "fragments/ui/prompt_login.tpuml",
+        "starter/app.starttpuml"
+      ],
+      "exportSvgs": [
+        "svg/app.svg"
+      ]
+    }
+  ]
+}

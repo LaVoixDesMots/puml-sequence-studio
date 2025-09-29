@@ -1,7 +1,12 @@
-<div class="card">
-    <label class="small">Projet</label>
-    <select [ngModel]="selectedId()" (ngModelChange)="onChange($event)">
-      <option *ngFor="let p of projects()" [ngValue]="p.id">{{ p.name }}</option>
-    </select>
-    <div class="small" *ngIf="desc()">{{ desc() }}</div>
-  </div>
+<div class="picker">
+  <label>Projet courant:</label>
+  <select [ngModel]="current()" (ngModelChange)="onChangeProject($event)">
+    <option [ngValue]="null">—</option>
+    <option *ngFor="let p of projects()" [ngValue]="p.name">{{ p.name }}</option>
+  </select>
+
+  <button (click)="createProject()">Nouveau</button>
+  <button (click)="deleteCurrent()" [disabled]="!current()">Supprimer</button>
+
+  <div class="msg" *ngIf="message()">{{ message() }}</div>
+</div>

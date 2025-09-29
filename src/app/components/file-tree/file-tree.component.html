@@ -1,7 +1,42 @@
-<ul class="file-list">
-  <li *ngFor="let p of files; trackBy: trackByPath"
-      (click)="pick.emit(p)"
-      [class.active]="p===selected">
-    {{ p }}
-  </li>
-</ul>
+<div class="tree-card">
+    <div class="header">
+        <div class="title">Fichiers du projet</div>
+        <div class="filters">
+            <label>Affichage</label>
+            <select [value]="showOnly()" (change)="onShowChange($event.target)">
+                <option value="all">Tout</option>
+                <option value="start">.starttpuml</option>
+                <option value="tpuml">.tpuml</option>
+                <option value="puml">.puml</option>
+                <option value="svg">.svg</option>
+            </select>
+
+        </div>
+    </div>
+
+    <div class="hint" *ngIf="message()">{{ message() }}</div>
+
+    <ul class="tree" *ngIf="!message()">
+        <ng-container *ngFor="let n of filteredTree()">
+            <ng-template [ngTemplateOutlet]="nodeTpl"
+                [ngTemplateOutletContext]="{ $implicit: n, depth: 0 }"></ng-template>
+        </ng-container>
+    </ul>
+
+    <ng-template #nodeTpl let-node let-depth="depth">
+        <li [style.paddingLeft.px]="depth * 5">
+            <button class="node" [class.dir]="node.isDir" [class.sel]="selectedPath()===node.path"
+                (click)="select(node)">
+                <span class="ico">{{ icon(node) }}</span>
+                <span class="name">{{ node.name }}</span>
+            </button>
+
+            <ul class="tree" *ngIf="node.isDir && isOpen(node)">
+                <ng-container *ngFor="let c of node.children">
+                    <ng-template [ngTemplateOutlet]="nodeTpl"
+                        [ngTemplateOutletContext]="{ $implicit: c, depth: depth + 1 }"></ng-template>
+                </ng-container>
+            </ul>
+        </li>
+    </ng-template>
+</div>
