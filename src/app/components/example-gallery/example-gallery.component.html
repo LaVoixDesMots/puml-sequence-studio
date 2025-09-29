@@ -1,0 +1,18 @@
+<div class="card">
+  <h3>Projets d’exemple</h3>
+  <div *ngIf="message()" class="small"> {{ message() }}</div>
+  <div *ngIf="busy()" class="small">Chargement…</div>
+
+  <div class="grid">
+    <div class="ex" *ngFor="let ex of examples()">
+      <div class="thumb" *ngIf="ex.thumbnail">
+        <img [src]="ex.thumbnail" alt="" />
+      </div>
+      <div class="meta">
+        <div class="title">{{ ex.title }}</div>
+        <div class="desc">{{ ex.description }}</div>
+      </div>
+      <button (click)="importExample(ex)">Importer</button>
+    </div>
+  </div>
+</div>

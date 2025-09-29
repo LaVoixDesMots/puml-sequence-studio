@@ -9,11 +9,10 @@
   <section>
     <app-importer (files)="onImport($event)"></app-importer>
     <h3 style="margin-top:12px">Fichiers</h3>
-    <app-file-tree
-      [files]="ws.listPaths()"
-      [selected]="ws.selected()"
-      (pick)="pick($event)">
-    </app-file-tree>
+    <app-project-picker></app-project-picker>
+    <app-file-tree (fileSelected)="onFileSelected($event)"></app-file-tree>
+    <app-example-gallery></app-example-gallery>
+
   </section>
 
   <section>

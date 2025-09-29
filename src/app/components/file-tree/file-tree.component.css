@@ -1,7 +1,42 @@
-.file-list { list-style: none; padding: 0; margin: 0; }
-.file-list li {
-  padding: 6px 8px;
-  border-bottom: 1px solid #eee;
-  cursor: pointer;
+.tree-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 8px;
 }
-.file-list li.active { background:#eef; }
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.title { font-weight: 600; }
+
+.filters { display: flex; align-items: center; gap: 6px; }
+.filters select { padding: 4px 6px; }
+
+.hint { font-size: 12px; color: #666; padding: 6px; }
+
+ul.tree { list-style: none; margin: 0; padding-left: 0; }
+
+.node {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 6px;
+}
+
+.node:hover { background: #f5f5f5; }
+
+.node.sel { background: #e9f2ff; }
+
+.node.dir { font-weight: 600; }
+
+.ico { width: 18px; display: inline-block; text-align: center; }
+.name { white-space: nowrap; color: black; }

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { WorkspaceService } from '../../services/workspace.service';
 import { RendererService } from '../../services/renderer.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-preview',
@@ -24,10 +25,18 @@ export class PreviewComponent implements OnDestroy {
   diagMissing = signal<string[]>([]);   // includes manquants
 
   title = computed(() => this.ws.selected() ?? 'Aucun fichier');
-
+  private sub?: Subscription;
   private stopEffect?: (EffectRef) | undefined;
 
   constructor() {
+    // this.sub = this.ws.changes$.subscribe(() => {
+    //   // quand le projet courant change :
+    //   // if (!this.loading()) {
+    //   //   this.safeSvg.set(null);             // reset (évite l’ancien affichage)
+    //   //   this.error.set(null);
+    //   // }
+    // });
+
     effect(async () => {
       const sel = this.ws.selected();
       // reset UI state
@@ -36,6 +45,7 @@ export class PreviewComponent implements OnDestroy {
       this.safeSvg.set(null);
       this.generatedPuml.set('');
       this.diagMissing.set([]);
+      
 
       if (!sel || !sel.endsWith('.starttpuml')) return;
 
@@ -51,7 +61,7 @@ export class PreviewComponent implements OnDestroy {
             `Include(s) introuvable(s):\n- ${diag.missingIncludes.join('\n- ')}`
           );
         }
-
+        // this.generatedPuml.set(puml);  // on montre ce qui part au renderer
         // 2) rendu
         const svg = await this.renderer.renderPlantUmlToSvg(diag.puml);
         if (!svg || !svg.trim()) {
@@ -74,5 +84,6 @@ export class PreviewComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.sub?.unsubscribe();
   }
 }
